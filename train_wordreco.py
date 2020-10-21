@@ -33,6 +33,7 @@ def parse_arguments():
     parser.add_argument('--epochs',type=int,default=10,help='Number of epochs to train')
     parser.add_argument('--batch_size',type=int,default=32,help='Batch size')
     parser.add_argument('--learning_rate',type=float,default=0.1,help='Learning rate')
+    parser.add_argument('--augment',default=False,action='store_true',help='Do augmentation on training data')
     parser.add_argument('--seed',type=float,default=0,help='Random seed')
     parser.add_argument('--verbose',default=0,type=int,choices=[0,1,2],help='Verbosity level (0, 1 or 2)')
     args = parser.parse_args()
