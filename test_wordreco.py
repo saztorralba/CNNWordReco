@@ -11,6 +11,23 @@ import torch
 import warnings
 warnings.filterwarnings('ignore')
 
+def show_matrix(conf_matrix, words):
+    width = 1 + max([len(w) for w in words])
+    print('Confusion matrix: \n')
+    out='|'+'|'.rjust(width)
+    for w in words:
+        out+=(w+'|').rjust(width)
+    print(out)
+    out='|'+''.join(['-' for i in range(width-1)])+'|'
+    for w in words:
+        out+=''.join(['-' for i in range(width-1)])+'|'
+    print(out)
+    for w in words:
+        out='|'+(w+'|').rjust(width)
+        for w2 in words:
+            out+=('{0:d}|'.format(int(conf_matrix[args['vocab'][w]][args['vocab'][w2]]))).rjust(width)
+        print(out)
+
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Test an isolated spoken word recogniser with CNNs')
     parser.add_argument('--input_file', metavar='FILE', default=None, help='Full path to a file containing normalised sentences')
@@ -38,23 +55,7 @@ def test_wordreco(args):
 
     #Show confusion matrix
     if args['conf_matrix']:
-        words = list(args['vocab'].keys())
-        width = 1 + max([len(w) for w in words])
-        print('Confusion matrix: \n')
-        out='|'.rjust(width)
-        for w in words:
-            out+=(w+'|').rjust(width)
-        print(out[0:-1])
-        out=''.join(['-' for i in range(width-1)])+'|'
-        for w in words:
-            out+=''.join(['-' for i in range(width-1)])+'|'
-        print(out[0:-1])
-        for w in words:
-            out=(w+'|').rjust(width)
-            for w2 in words:
-                out+=('{0:d}|'.format(int(conf_matrix[args['vocab'][w]][args['vocab'][w2]]))).rjust(width)
-            print(out[0:-1])
-
+        show_matrix(conf_matrix, list(args['vocab'].keys()))
 
 if __name__ == '__main__':
     args=parse_arguments()
