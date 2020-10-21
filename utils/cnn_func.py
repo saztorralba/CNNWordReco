@@ -10,7 +10,7 @@ def load_data(data,cv=False,**kwargs):
     n_samples = len(data)
     dataset = torch.zeros((n_samples,1,kwargs['ysize'],kwargs['xsize']),dtype=torch.uint8)
     labels = torch.zeros((n_samples),dtype=torch.uint8)
-    for i in tqdm(range(n_samples),desc='Allocating data memory'):
+    for i in tqdm(range(n_samples),disable=(not kwargs['use_tqdm'])):
         path = data['wavfile'][i]
         dataset[i,0,:,:] = torch.from_numpy(feat2img(gen_logmel(path,40,8000,True),kwargs['ysize'],kwargs['xsize']))
         labels[i] = kwargs['vocab'][data['word'][i]]
@@ -33,7 +33,7 @@ def train_model(trainset,trainlabels,model,optimizer,criterion,**kwargs):
     nbatches = math.ceil(trainlen/kwargs['batch_size'])
     total_loss = 0
     total_backs = 0
-    with tqdm(total=nbatches) as pbar:
+    with tqdm(total=nbatches,disable=(not kwargs['use_tqdm'])) as pbar:
         model = model.train()
         for b in range(nbatches):
             #Obtain batch
@@ -54,6 +54,8 @@ def train_model(trainset,trainlabels,model,optimizer,criterion,**kwargs):
                 total_backs += 1
             pbar.set_description(f'Training epoch. Loss {total_loss/(total_backs+1):.2f}')
             pbar.update()
+    if not kwargs['use_tqdm']:
+        print(f'Final loss {total_loss/(total_backs+1):.2f}')
 
 #Validate last epoch's model
 def validate_model(validset,validlabels,model,**kwargs):
@@ -62,7 +64,7 @@ def validate_model(validset,validlabels,model,**kwargs):
     total = 0
     nbatches = math.ceil(validlen/kwargs['batch_size'])
     with torch.no_grad():
-        with tqdm(total=nbatches) as pbar:
+        with tqdm(total=nbatches,disable=(not kwargs['use_tqdm'])) as pbar:
             model = model.eval()
             for b in range(nbatches):
                 #Obtain batch
@@ -76,6 +78,8 @@ def validate_model(validset,validlabels,model,**kwargs):
                 total+=Y.shape[0]
                 pbar.set_description(f'Evaluating epoch. Accuracy {100*acc/total:.2f}%')
                 pbar.update()
+    if not kwargs['use_tqdm']:
+        print(f'Accuracy {100*acc/total:.2f}%')
     return 100*acc/total
 
 #Test a model
@@ -84,18 +88,15 @@ def test_model(testset,testlabels,model,**args):
     conf_matrix = np.zeros((10,10))
     nbatches = math.ceil(testlen/args['batch_size'])
     with torch.no_grad():
-        with tqdm(total=nbatches) as pbar:
-            model = model.eval()
-            for b in range(nbatches):
-                #Obtain batch
-                X = testset[b*args['batch_size']:min(testlen,(b+1)*args['batch_size'])].clone().float()
-                Y = testlabels[b*args['batch_size']:min(testlen,(b+1)*args['batch_size'])].clone().long()
-                #Propagate
-                posteriors = model(X)
-                #Accumulate confusion matrix
-                estimated = torch.argmax(posteriors,dim=1)
-                for i in range(Y.shape[0]):
-                    conf_matrix[Y[i],estimated[i]]+=1
-                pbar.set_description(f'Testing')
-                pbar.update()
+        model = model.eval()
+        for b in range(nbatches):
+            #Obtain batch
+            X = testset[b*args['batch_size']:min(testlen,(b+1)*args['batch_size'])].clone().float()
+            Y = testlabels[b*args['batch_size']:min(testlen,(b+1)*args['batch_size'])].clone().long()
+            #Propagate
+            posteriors = model(X)
+            #Accumulate confusion matrix
+            estimated = torch.argmax(posteriors,dim=1)
+            for i in range(Y.shape[0]):
+                conf_matrix[Y[i],estimated[i]]+=1
     return conf_matrix

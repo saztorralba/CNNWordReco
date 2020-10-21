@@ -34,6 +34,7 @@ def parse_arguments():
     parser.add_argument('--batch_size',type=int,default=32,help='Batch size')
     parser.add_argument('--learning_rate',type=float,default=0.1,help='Learning rate')
     parser.add_argument('--seed',type=float,default=0,help='Random seed')
+    parser.add_argument('--use_tqdm',default=False,action='store_true',help='Use tqdm progress bar')
     args = parser.parse_args()
     args = vars(args)
     return args
