@@ -48,17 +48,17 @@ A train and test subsets from the Free Spoken Digit Dataset (FSDD) are provided,
 
 This is the confusion matrix obtained with a CNN model on the traing and test provided using the example configuration. The overall accuracy is 91.20%:
 
-     |EIGHT| FIVE| FOUR| NINE|  ONE|SEVEN|  SIX|THREE|  TWO| ZERO
------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----
-EIGHT|   46|    0|    0|    0|    0|    0|    2|    2|    0|    0
- FIVE|    0|   50|    0|    0|    0|    0|    0|    0|    0|    0
- FOUR|    0|    0|   50|    0|    0|    0|    0|    0|    0|    0
- NINE|    0|    0|    0|   44|    6|    0|    0|    0|    0|    0
-  ONE|    0|    0|    0|    0|   50|    0|    0|    0|    0|    0
-SEVEN|    0|    0|    0|    0|    0|   50|    0|    0|    0|    0
-  SIX|   13|    0|    0|    0|    0|    0|   20|   16|    0|    1
-THREE|    0|    0|    0|    0|    0|    0|    0|   49|    1|    0
-  TWO|    0|    0|    0|    0|    0|    0|    0|    0|   47|    3
- ZERO|    0|    0|    0|    0|    0|    0|    0|    0|    0|   50
+|     |EIGHT| FIVE| FOUR| NINE|  ONE|SEVEN|  SIX|THREE|  TWO| ZERO|
+|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+|EIGHT|   46|    0|    0|    0|    0|    0|    2|    2|    0|    0|
+| FIVE|    0|   50|    0|    0|    0|    0|    0|    0|    0|    0|
+| FOUR|    0|    0|   50|    0|    0|    0|    0|    0|    0|    0|
+| NINE|    0|    0|    0|   44|    6|    0|    0|    0|    0|    0|
+|  ONE|    0|    0|    0|    0|   50|    0|    0|    0|    0|    0|
+|SEVEN|    0|    0|    0|    0|    0|   50|    0|    0|    0|    0|
+|  SIX|   13|    0|    0|    0|    0|    0|   20|   16|    0|    1|
+|THREE|    0|    0|    0|    0|    0|    0|    0|   49|    1|    0|
+|  TWO|    0|    0|    0|    0|    0|    0|    0|    0|   47|    3|
+| ZERO|    0|    0|    0|    0|    0|    0|    0|    0|    0|   50|
 
 
