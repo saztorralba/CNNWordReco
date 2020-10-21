@@ -15,7 +15,7 @@ Training is done with the ``train_wordreco.py`` script. Run ``python train_wordr
 python train_wordreco.py --input_file data/train.csv --output_file output/model.pytorch --xsize 20 --ysize 20 --num_blocks 5 --channels 32 --embedding_size 64 --epochs 10 --batch_size 32 --learning_rate 0.01 --dropout 0.6
 ```
 
-The input file is a CSV file containing at least two columns: ``wavfile`` with the path to each wavefile to use, and ``word`` with the word corresponding to each wavefile.
+The input file is a CSV file containing at least two columns: ``wavfile`` with the path to each wavefile to use, and ``word`` with the word corresponding to each wavefile. The level of output can be modified with the ``--verbose`` argument to 0 (no output), 1 or 2 (full debug output).
 
 ### Testing
 Testing is done with the ``test_wordreco.py`` scripts. Run ``python test_wordreco.py --help`` for details on the existing arguments. An example run is provided here:
@@ -24,7 +24,7 @@ Testing is done with the ``test_wordreco.py`` scripts. Run ``python test_wordrec
 python test_wordreco.py --input_file data/test.csv --model_file output/model.pytorch --conf_matrix
 ```
 
-It will report the overall accuracy of the system, and when the ``--conf-matrix`` argument is used, it will provide the confusion matrix of the system. The input CSV file must have at the same columns as in training.
+The input CSV file must have at the same columns as in training. The level of output can be modified with the ``--verbose`` argument to 0 (only global accuracy is reported), 1 (full confidence matrix is reported) or 2 (full debug output).
 
 ## Dependencies
 

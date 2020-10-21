@@ -34,8 +34,7 @@ def parse_arguments():
     parser.add_argument('--input_file', metavar='FILE', default=None, help='Full path to a file containing normalised sentences')
     parser.add_argument('--model_file', metavar='FILE', default=None, help='Full path to trained serialised model')
     parser.add_argument('--batch_size',type=int,default=64,help='Batch size')
-    parser.add_argument('--conf_matrix',default=False,action='store_true',help='Show the confusion matrix')
-    parser.add_argument('--use_tqdm',default=False,action='store_true',help='Use tqdm progress bar')
+    parser.add_argument('--verbose',default=0,type=int,choices=[0,1,2],help='Verbosity level (0, 1 or 2)')
     args = parser.parse_args()
     args = vars(args)
     return args
@@ -50,13 +49,15 @@ def test_wordreco(args):
     #Load data
     data = pd.read_csv(args['input_file'])
     testset, testlabels = load_data(data, False, **args)
+    if args['verbose'] >= 1:
+        print('Number of testing samples: {0:d}'.format(testset.shape[0]))
 
     #Compute results
     conf_matrix = test_model(testset,testlabels,model,**args)
     print('Global accuracy: {0:.2f}%'.format(100*np.sum(conf_matrix*np.eye(len(args['vocab'])))/np.sum(conf_matrix)))
 
     #Show confusion matrix
-    if args['conf_matrix']:
+    if args['verbose'] >= 1:
         show_matrix(conf_matrix, **args)
 
 if __name__ == '__main__':

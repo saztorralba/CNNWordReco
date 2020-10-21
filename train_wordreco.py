@@ -34,7 +34,7 @@ def parse_arguments():
     parser.add_argument('--batch_size',type=int,default=32,help='Batch size')
     parser.add_argument('--learning_rate',type=float,default=0.1,help='Learning rate')
     parser.add_argument('--seed',type=float,default=0,help='Random seed')
-    parser.add_argument('--use_tqdm',default=False,action='store_true',help='Use tqdm progress bar')
+    parser.add_argument('--verbose',default=0,type=int,choices=[0,1,2],help='Verbosity level (0, 1 or 2)')
     args = parser.parse_args()
     args = vars(args)
     return args
@@ -53,28 +53,35 @@ def train_wordreco(args):
     trainset, validset, trainlabels, validlabels = load_data(data,True,**args)
     args['mean'] = torch.mean(trainset.float())
     args['std'] = torch.std(trainset.float())
-    print('Number of training samples: {0:d}'.format(trainset.shape[0]))
-    print('Number of cross-validaton samples: {0:d}'.format(validset.shape[0]))
+    if args['verbose'] >= 1:
+        print('Number of training samples: {0:d}'.format(trainset.shape[0]))
+        print('Number of cross-validaton samples: {0:d}'.format(validset.shape[0]))
 
     #Create model, optimiser and criterion
     model = SimpleCNN(**args).to(args['device']) 
     optimizer = torch.optim.Adam(model.parameters(),lr=args['learning_rate'])
     criterion = nn.NLLLoss(reduction='mean').to(args['device'])
-    print('\nModel:')
-    print(model)
-    print('\n')
+    if args['verbose'] == 2:
+        print('\nModel:')
+        print(model)
+        print('\n')
 
     #Train epochs
     for ep in range(1,args['epochs']+1):
-        print('Epoch {0:d} of {1:d}'.format(ep,args['epochs']))
-        train_model(trainset,trainlabels,model,optimizer,criterion,**args)
+        if args['verbose'] == 2:
+            print('Epoch {0:d} of {1:d}'.format(ep,args['epochs']))
+        loss = train_model(trainset,trainlabels,model,optimizer,criterion,**args)
         acc = validate_model(validset,validlabels,model,**args)
+        if args['verbose'] == 1:
+            print('Epoch {0:d} of {1:d}. Training loss: {2:.2f}, cross-validation accuracy: {3:.2f}%'.format(ep,args['epochs'],loss,acc))
 
         #Save intermediate models
         nfolder = os.path.dirname(args['output_file'])
         nfile = nfolder+'/intermediate/model_epoch{0:02d}_acc{1:0.2f}.pytorch'.format(ep,acc)
         make_folder_for_file(nfile)
         torch.save(model,nfile)
+    if args['verbose'] == 0:
+        print('Final training loss: {0:.2f}, cross-validation accuracy: {1:.2f}%'.format(loss,acc))
 
     #Save final models
     model = model.cpu().eval()
