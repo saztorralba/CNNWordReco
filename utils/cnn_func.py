@@ -83,20 +83,23 @@ def validate_model(validset,validlabels,model,**kwargs):
     return 100*acc/total
 
 #Test a model
-def test_model(testset,testlabels,model,**args):
+def test_model(testset,testlabels,model,**kwargs):
     testlen = testset.shape[0]
     conf_matrix = np.zeros((10,10))
-    nbatches = math.ceil(testlen/args['batch_size'])
+    nbatches = math.ceil(testlen/kwargs['batch_size'])
     with torch.no_grad():
         model = model.eval()
-        for b in range(nbatches):
-            #Obtain batch
-            X = testset[b*args['batch_size']:min(testlen,(b+1)*args['batch_size'])].clone().float()
-            Y = testlabels[b*args['batch_size']:min(testlen,(b+1)*args['batch_size'])].clone().long()
-            #Propagate
-            posteriors = model(X)
-            #Accumulate confusion matrix
-            estimated = torch.argmax(posteriors,dim=1)
-            for i in range(Y.shape[0]):
-                conf_matrix[Y[i],estimated[i]]+=1
+        with tqdm(total=nbatches,disable=(not kwargs['use_tqdm'])) as pbar:
+            for b in range(nbatches):
+                #Obtain batch
+                X = testset[b*kwargs['batch_size']:min(testlen,(b+1)*kwargs['batch_size'])].clone().float()
+                Y = testlabels[b*kwargs['batch_size']:min(testlen,(b+1)*kwargs['batch_size'])].clone().long()
+                #Propagate
+                posteriors = model(X)
+                #Accumulate confusion matrix
+                estimated = torch.argmax(posteriors,dim=1)
+                for i in range(Y.shape[0]):
+                    conf_matrix[Y[i],estimated[i]]+=1
+                pbar.set_description('Testing')
+                pbar.update()
     return conf_matrix
