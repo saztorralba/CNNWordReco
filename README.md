@@ -42,11 +42,11 @@ The code has been tested in the following environment, with the main following d
 
 ### Data
 
-A train and test subsets from the Free Spoken Digit Dataset (FSDD) are provided, the original dataset is available in [Kaggle](https://www.kaggle.com/joserzapata/free-spoken-digit-dataset-fsdd).
+The code has been evaluated with data from the Free Spoken Digit Dataset (FSDD), available in [Kaggle](https://www.kaggle.com/joserzapata/free-spoken-digit-dataset-fsdd), using one of the avilable speakers for test and training in the remaining speakers.
 
 ### Results
 
-This is the confusion matrix obtained with a CNN model on the traing and test provided using the example configuration. The overall accuracy is 91.20%:
+This is the confusion matrix obtained with a CNN model on a traing and test from the FSDD. The overall accuracy is 91.20%:
 
 |     |EIGHT| FIVE| FOUR| NINE|  ONE|SEVEN|  SIX|THREE|  TWO| ZERO|
 |-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
