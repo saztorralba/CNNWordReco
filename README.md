@@ -12,7 +12,7 @@ The code provides 2 functionalities: training a word recogniser and evaluatinf t
 Training is done with the ``train_wordreco.py`` script. Run ``python train_wordreco.py --help`` for details on the existing arguments. An example run is provided here:
 
 ```
-python3 train_wordreco.py --input_file data/train.csv --output_file output/model.pytorch --xsize 20 --ysize 20 --num_blocks 5 --channels 32 --embedding_size 128 --epochs 15 --batch_size 32 --learning_rate 0.001 --dropout 0.4 --augment --verbose 1
+python3 train_wordreco.py --input_file data/train.csv --output_file output/model.pytorch --xsize 20 --ysize 20 --num_blocks 10 --channels 32 --embedding_size 128 --epochs 20 --batch_size 32 --learning_rate 0.001 --dropout 0.3 --verbose 1
 ```
 
 The input file is a CSV file containing at least two columns: ``wavfile`` with the path to each wavefile to use, and ``word`` with the word corresponding to each wavefile. The level of output can be modified with the ``--verbose`` argument to 0 (no output), 1 or 2 (full debug output).
@@ -42,23 +42,25 @@ The code has been tested in the following environment, with the main following d
 
 ### Data
 
-The code has been evaluated with data from the Free Spoken Digit Dataset (FSDD), available in [Kaggle](https://www.kaggle.com/joserzapata/free-spoken-digit-dataset-fsdd), using one of the avilable speakers for test and training in the remaining speakers.
+The code has been evaluated with data from the Free Spoken Digit Dataset (FSDD), available in [GitHub](https://github.com/Jakobovski/free-spoken-digit-dataset/),
+and with a task available in [Kaggle](https://www.kaggle.com/joserzapata/free-spoken-digit-dataset-fsdd).
+The original author proposes to use 2,700 recordings for training (45 per speaker per digit) and 300 recordings for testing (5 per speaker per digit).
 
 ### Results
 
-This is the confusion matrix obtained with a CNN model on a traing and test from the FSDD. The overall accuracy is 91.20%:
+On the proposed setup, the accuracy obtained is 97.67%, and the confusion matrix achieved is:
 
-|     |EIGHT| FIVE| FOUR| NINE|  ONE|SEVEN|  SIX|THREE|  TWO| ZERO|
+|     | ZERO|  ONE|  TWO|THREE| FOUR| FIVE|  SIX|SEVEN|EIGHT| NINE|
 |-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
-|EIGHT|   46|    0|    0|    0|    0|    0|    2|    2|    0|    0|
-| FIVE|    0|   50|    0|    0|    0|    0|    0|    0|    0|    0|
-| FOUR|    0|    0|   50|    0|    0|    0|    0|    0|    0|    0|
-| NINE|    0|    0|    0|   44|    6|    0|    0|    0|    0|    0|
-|  ONE|    0|    0|    0|    0|   50|    0|    0|    0|    0|    0|
-|SEVEN|    0|    0|    0|    0|    0|   50|    0|    0|    0|    0|
-|  SIX|   13|    0|    0|    0|    0|    0|   20|   16|    0|    1|
-|THREE|    0|    0|    0|    0|    0|    0|    0|   49|    1|    0|
-|  TWO|    0|    0|    0|    0|    0|    0|    0|    0|   47|    3|
-| ZERO|    0|    0|    0|    0|    0|    0|    0|    0|    0|   50|
+| ZERO|   30|    0|    0|    0|    0|    0|    0|    0|    0|    0|
+|  ONE|    0|   30|    0|    0|    0|    0|    0|    0|    0|    0|
+|  TWO|    0|    0|   29|    1|    0|    0|    0|    0|    0|    0|
+|THREE|    0|    0|    0|   28|    0|    0|    2|    0|    0|    0|
+| FOUR|    0|    0|    0|    0|   30|    0|    0|    0|    0|    0|
+| FIVE|    0|    0|    0|    0|    0|   29|    1|    0|    0|    0|
+|  SIX|    0|    0|    0|    0|    0|    0|   30|    0|    0|    0|
+|SEVEN|    0|    0|    0|    0|    0|    0|    0|   30|    0|    0|
+|EIGHT|    0|    0|    0|    0|    0|    0|    2|    0|   28|    0|
+| NINE|    0|    1|    0|    0|    0|    0|    0|    0|    0|   29|
 
 
