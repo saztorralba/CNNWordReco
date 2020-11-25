@@ -32,7 +32,7 @@ class SimpleCNN(nn.Module):
         self.l2norm = L2Norm()
         #Classification layer and softmax
         self.output = nn.Linear(self.embedding_size, self.num_classes)
-        self.softmax = nn.LogSoftmax()
+        self.softmax = nn.LogSoftmax(dim=1)
 
     def forward(self, x):
         out = self.inputnorm(x)
