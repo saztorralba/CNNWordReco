@@ -20,16 +20,16 @@ class SimpleCNN(nn.Module):
 
         #Gaussian normalise the input
         self.inputnorm = InputNorm(self.mean,self.std)
-        #Residual convolutional block
-        self.convblock1 = ConvBlock(kwargs['input_channels'], self.channels, kernel=(3, 3), stride=(2, 2), padding=(1, 1), groups=1, dropout=self.dropout, residual=False)
-        tmp_xsize = int(self.xsize/2)
-        tmp_ysize = int(self.ysize/2)
+        tmp_xsize = self.xsize
+        tmp_ysize = self.ysize
+        #Convolutional blocks
         for i in range(1,self.num_blocks):
-            setattr(self,'convblock'+str(i+1),ConvBlock(self.channels, self.channels, kernel=(3, 3), stride=(1, 1), padding=(1, 1), groups=int(self.channels/2), dropout=self.dropout, residual=True))
-            if self.reduce_size:
-                setattr(self,'convblock'+str(i+1)+'b',ConvBlock(self.channels, self.channels, kernel=(3, 3), stride=(2, 2), padding=(1, 1), groups=int(self.channels/2), dropout=self.dropout, residual=False))
-                tmp_xsize = int(self.xsize/2)
-                tmp_ysize = int(self.ysize/2)
+            if self.reduce_size or i ==1:
+                setattr(self,'convblock'+str(i)+'input',ConvBlock((self.channels if i>1 else 3), self.channels, kernel=(3, 3), stride=(2, 2), padding=(1, 1), groups=1, dropout=self.dropout, residual=False))
+                tmp_xsize = int(tmp_xsize/2)
+                tmp_ysize = int(tmp_xsize/2)
+            setattr(self,'convblock'+str(i),ConvBlock(self.channels, self.channels, kernel=(3, 3), stride=(1, 1), padding=(1, 1), groups=int(self.channels/2), dropout=self.dropout, residual=True))
+            
         #Flatten the output
         self.flatten = nn.Flatten()
         #Reduce to embedding layer
@@ -46,11 +46,11 @@ class SimpleCNN(nn.Module):
         out = self.inputnorm(x)
         out = self.convblock1(out)
         for i in range(1,self.num_blocks):
-            conv = getattr(self,'convblock'+str(i+1))
-            out = conv(out)
-            if self.reduce_size:
-                conv = getattr(self,'convblock'+str(i+1)+'b')
+            if self.reduce_size or i==1:
+                conv = getattr(self,'convblock'+str(i)+'input')
                 out = conv(out)
+            conv = getattr(self,'convblock'+str(i))
+            out = conv(out)
         out = self.flatten(out)
         out = self.linear(out)
         out = self.batchnorm(out)
