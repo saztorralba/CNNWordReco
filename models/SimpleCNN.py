@@ -44,7 +44,6 @@ class SimpleCNN(nn.Module):
 
     def forward(self, x):
         out = self.inputnorm(x)
-        out = self.convblock1(out)
         for i in range(1,self.num_blocks+1):
             if self.reduce_size or i==1:
                 conv = getattr(self,'convblock'+str(i))
