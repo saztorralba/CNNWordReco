@@ -27,7 +27,7 @@ class SimpleCNN(nn.Module):
             if self.reduce_size or i ==1:
                 setattr(self,'convblock'+str(i),ConvBlock((self.channels if i>1 else self.input_channels), self.channels, kernel=(3, 3), stride=(2, 2), padding=(1, 1), groups=1, dropout=self.dropout, residual=False))
                 tmp_xsize = int(tmp_xsize/2)
-                tmp_ysize = int(tmp_xsize/2)
+                tmp_ysize = int(tmp_ysize/2)
             setattr(self,'convblock'+str(i)+'residual',ConvBlock(self.channels, self.channels, kernel=(3, 3), stride=(1, 1), padding=(1, 1), groups=int(self.channels/2), dropout=self.dropout, residual=True))
             
         #Flatten the output
