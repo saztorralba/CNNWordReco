@@ -9,6 +9,8 @@ class SimpleCNN(nn.Module):
         self.ysize = kwargs['ysize']
         self.num_blocks = kwargs['num_blocks']
         self.channels = kwargs['channels']
+        self.input_channels = (kwargs['input_channels'] if 'input_channels' in kwargs else 1)
+        self.reduce_size = (kwargs['reduce_size'] if 'reduce_size' in kwargs else False)
         self.dropout = kwargs['dropout']
         self.embedding_size = kwargs['embedding_size']
         self.vocab = kwargs['vocab']
@@ -19,9 +21,11 @@ class SimpleCNN(nn.Module):
         #Gaussian normalise the input
         self.inputnorm = InputNorm(self.mean,self.std)
         #Residual convolutional block
-        self.convblock1 = ConvBlock(1, self.channels, kernel=(3, 3), stride=(2, 2), padding=(1, 1), groups=1, dropout=self.dropout, residual=False)
+        self.convblock1 = ConvBlock(kwargs['input_channels'], self.channels, kernel=(3, 3), stride=(2, 2), padding=(1, 1), groups=1, dropout=self.dropout, residual=False)
         for i in range(1,self.num_blocks):
             setattr(self,'convblock'+str(i+1),ConvBlock(self.channels, self.channels, kernel=(3, 3), stride=(1, 1), padding=(1, 1), groups=int(self.channels/2), dropout=self.dropout, residual=True))
+            if self.reduce_size:
+                setattr(self,'convblock'+str(i+1)+'b',ConvBlock(self.channels, self.channels, kernel=(3, 3), stride=(2, 2), padding=(1, 1), groups=int(self.channels/2), dropout=self.dropout, residual=False))
         #Flatten the output
         self.flatten = nn.Flatten()
         #Reduce to embedding layer
@@ -40,6 +44,9 @@ class SimpleCNN(nn.Module):
         for i in range(1,self.num_blocks):
             conv = getattr(self,'convblock'+str(i+1))
             out = conv(out)
+            if self.reduce_size:
+                conv = getattr(self,'convblock'+str(i+1)+'b')
+                out = conv(out)
         out = self.flatten(out)
         out = self.linear(out)
         out = self.batchnorm(out)
