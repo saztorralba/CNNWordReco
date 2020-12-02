@@ -90,7 +90,7 @@ def validate_model(validset,validlabels,model,**kwargs):
 #Test a model
 def test_model(testset,testlabels,model,**kwargs):
     testlen = testset.shape[0]
-    conf_matrix = np.zeros((len(kwargs['vocab'],len(kwargs['vocab']))
+    conf_matrix = np.zeros((len(kwargs['vocab']),len(kwargs['vocab'])))
     nbatches = math.ceil(testlen/kwargs['batch_size'])
     with torch.no_grad():
         model = model.eval()
