@@ -12,7 +12,7 @@ def load_data(data,cv=False,**kwargs):
     labels = torch.zeros((n_samples),dtype=torch.uint8)
     for i in tqdm(range(n_samples),disable=(kwargs['verbose']<2)):
         path = data['wavfile'][i]
-        dataset[i,0,:,:] = torch.from_numpy(feat2img(gen_logmel(path,40,8000,True),kwargs['ysize'],kwargs['xsize']))
+        dataset[i,0,:,:] = torch.from_numpy(feat2img(gen_logmel(path,(kwargs['n_mels'] if 'n_mels' in kwargs else 40),(kwargs['sampling'] if 'sampling' in kwargs else 8000),True),kwargs['ysize'],kwargs['xsize']))
         labels[i] = kwargs['vocab'][data['word'][i]]
 
     if cv == False:
