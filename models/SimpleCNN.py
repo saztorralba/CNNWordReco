@@ -42,7 +42,7 @@ class SimpleCNN(nn.Module):
         self.output = nn.Linear(self.embedding_size, self.num_classes)
         self.softmax = nn.LogSoftmax(dim=1)
 
-    def forward(self, x):
+    def forward(self, x, return_embedding = False):
         out = self.inputnorm(x)
         for i in range(1,self.num_blocks+1):
             if self.reduce_size or i==1:
@@ -54,8 +54,9 @@ class SimpleCNN(nn.Module):
         out = self.linear(out)
         out = self.batchnorm(out)
         out = self.l2norm(out)
-        out = self.output(out)
-        out = self.softmax(out)
+        if not return_embedding:
+            out = self.output(out)
+            out = self.softmax(out)
         return out
 
 #Performs gaussian normalisation of an input with mean and standard deviation
