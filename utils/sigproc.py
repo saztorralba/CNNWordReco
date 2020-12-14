@@ -7,14 +7,18 @@ import scipy.signal
 from PIL import Image
 
 #Function to extract log-mel spectrums
-def gen_logmel(signal,n_mels,fs=8000,normalise=False,n_fft=25,hop_length=10):
+def gen_logmel(signal,n_mels,f=None,fs=8000,normalise=False,n_fft=25,hop_length=10):
     epsilon=1e-20
     n_fft=int(n_fft*fs/1000)
     hop_length=int(hop_length*fs/1000)
     #Read file
-    audio,f=soundfile.read(signal)
-    if f!=fs:
-        audio=resample(audio,f,fs)
+    if isinstance(signal,str):
+        audio,f=soundfile.read(signal)
+        if f!=fs:
+            audio=resample(audio,f,fs)
+    else:
+        if f is not None and f!=fs:
+            audio=resample(audio,f,fs)
     #Normalise input energy
     if normalise:
         audio=0.5*audio/np.max(np.absolute(audio))
