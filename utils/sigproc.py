@@ -18,7 +18,7 @@ def gen_logmel(signal,n_mels,fs=8000,normalise=False,n_fft=25,hop_length=10,f=No
             audio=resample(audio,f,fs)
     else:
         if f is not None and f!=fs:
-            audio=resample(audio,f,fs)
+            audio=resample(signal,f,fs)
     #Normalise input energy
     if normalise:
         audio=0.5*audio/np.max(np.absolute(audio))
