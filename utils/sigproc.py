@@ -7,7 +7,7 @@ import scipy.signal
 from PIL import Image
 
 #Function to extract log-mel spectrums
-def gen_logmel(signal,n_mels,f=None,fs=8000,normalise=False,n_fft=25,hop_length=10):
+def gen_logmel(signal,n_mels,fs=8000,normalise=False,n_fft=25,hop_length=10,f=None):
     epsilon=1e-20
     n_fft=int(n_fft*fs/1000)
     hop_length=int(hop_length*fs/1000)
