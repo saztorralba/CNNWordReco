@@ -23,7 +23,8 @@ def gen_logmel(signal,n_mels,fs=8000,normalise=False,n_fft=25,hop_length=10,f=No
     if normalise:
         audio=0.5*audio/np.max(np.absolute(audio))
     #High-pass filter
-    audio=scipy.signal.convolve(audio,np.array([1,-0.98]),mode='same',method='fft')
+    #audio=scipy.signal.convolve(audio,np.array([1,-0.98]),mode='same',method='fft')
+    audio = audio[1:] - 0.98 * audio[:-1]
     #Comput spectrogram
     melspec=librosa.feature.melspectrogram(y=audio,sr=fs,n_fft=n_fft,hop_length=hop_length,n_mels=n_mels,fmin=100,fmax=fs/2,norm=1)
     #Logarithm
