@@ -20,8 +20,10 @@ def gen_logmel(signal,n_mels,fs=8000,normalise=False,n_fft=25,hop_length=10,f=No
         if f is not None and f!=fs:
             audio=resample(signal,f,fs)
     #Normalise input energy
-    if normalise and np.max(np.absolute(audio))>0:
-        audio=0.5*audio/np.max(np.absolute(audio))
+    if normalise:
+        norm = np.max(np.absolute(audio))
+        if norm > 0:
+            audio=0.5*audio/norm
     #High-pass filter
     #audio=scipy.signal.convolve(audio,np.array([1,-0.98]),mode='same',method='fft')
     audio = audio[1:] - 0.98 * audio[:-1]
