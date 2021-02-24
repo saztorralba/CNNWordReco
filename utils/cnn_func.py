@@ -31,6 +31,8 @@ def load_data(data,cv=False,**kwargs):
 def train_model(trainset,trainlabels,model,optimizer,criterion,**kwargs):
     trainlen = trainset.shape[0]
     nbatches = math.ceil(trainlen/kwargs['batch_size'])
+    if trainlen % kwargs['batch_size'] == 1:
+        nbatches -= 1
     total_loss = 0
     total_backs = 0
     with tqdm(total=nbatches,disable=(kwargs['verbose']<2)) as pbar:
