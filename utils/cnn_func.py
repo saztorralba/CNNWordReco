@@ -42,11 +42,10 @@ def train_model(trainset,trainlabels,model,optimizer,criterion,**kwargs):
             X = trainset[b*kwargs['batch_size']:min(trainlen,(b+1)*kwargs['batch_size'])].clone().float()
             if kwargs['augment']:
                 for i in range(X.shape[0]):
-                    for j in range(X.shape[0]):
-                        if random.random()<0.3:
-                            locate=[random.randrange(0,kwargs['ysize']-2),random.randrange(0,kwargs['xsize']-2)]
-                            X[locate[0]:locate[0]+3,locate[1]:locate[1]+3]=random.randint(0,255)
-                X = X + 10*torch.randn(X.shape)
+                    if random.random()<(kwargs['augmentation_prob'] if 'augmentation_prob' in kwargs else 0.3):
+                        locate=[random.randrange(0,kwargs['ysize']-2),random.randrange(0,kwargs['xsize']-2)]
+                        X[locate[0]:locate[0]+3,locate[1]:locate[1]+3]=random.randint(0,255)
+                X = X + (kwargs['augmentation_noise'] if 'augmentation_noise' in kwargs else 10)*torch.randn(X.shape)
             X = X.to(kwargs['device'])
             Y = trainlabels[b*kwargs['batch_size']:min(trainlen,(b+1)*kwargs['batch_size'])].clone().long().to(kwargs['device'])
             #Propagate
